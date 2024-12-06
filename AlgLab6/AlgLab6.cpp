@@ -29,10 +29,9 @@ void printG(int** G, int size) {
     printf("\n");
 }
 
-// Преобразование матрицы смежности в список смежности
 void adjMatrixToList(int** G, int size, int** adjList, int* degrees) {
     for (int i = 0; i < size; i++) {
-        degrees[i] = 0; // Считаем степень вершины
+        degrees[i] = 0;
         for (int j = 0; j < size; j++) {
             if (G[i][j] == 1) {
                 adjList[i][degrees[i]] = j;
@@ -42,7 +41,6 @@ void adjMatrixToList(int** G, int size, int** adjList, int* degrees) {
     }
 }
 
-// Вывод списка смежности
 void printAdjList(int** adjList, int* degrees, int size) {
     for (int i = 0; i < size; i++) {
         printf("%d: ", i);
@@ -53,7 +51,6 @@ void printAdjList(int** adjList, int* degrees, int size) {
     }
 }
 
-// Удаление вершины
 int** delG(int** G, int size, int v) {
     int** G1 = (int**)malloc((size - 1) * sizeof(int*));
     for (int i = 0; i < size - 1; i++) {
@@ -78,7 +75,6 @@ int** delG(int** G, int size, int v) {
     return G1;
 }
 
-// Отождествление вершин
 int** unionV(int** G, int size, int v1, int v2) {
     for (int i = 0; i < size; i++) {
         if (G[v2][i] == 1) {
@@ -89,7 +85,6 @@ int** unionV(int** G, int size, int v1, int v2) {
     return delG(G, size, v2);
 }
 
-// Стягивание ребра
 int** contrV(int** G, int size, int v1, int v2) {
     G[v1][v2] = 0;
     G[v2][v1] = 0;
@@ -102,7 +97,6 @@ int** contrV(int** G, int size, int v1, int v2) {
     return delG(G, size, v2);
 }
 
-// Расщепление вершины
 int** splitV(int** G, int size, int v) {
     int** Gtemp = (int**)malloc((size + 1) * sizeof(int*));
     for (int i = 0; i < size + 1; i++) {
@@ -125,53 +119,104 @@ int** splitV(int** G, int size, int v) {
     return Gtemp;
 }
 
+int** unionG(int** G1, int** G2, int size) {
+    int** G = (int**)malloc(size * sizeof(int*));
+    for (int i = 0; i < size; i++) {
+        G[i] = (int*)malloc(size * sizeof(int));
+        for (int j = 0; j < size; j++) {
+            G[i][j] = G1[i][j] || G2[i][j];
+        }
+    }
+    return G;
+}
+
+int** intersectG(int** G1, int** G2, int size) {
+    int** G = (int**)malloc(size * sizeof(int*));
+    for (int i = 0; i < size; i++) {
+        G[i] = (int*)malloc(size * sizeof(int));
+        for (int j = 0; j < size; j++) {
+            G[i][j] = G1[i][j] && G2[i][j];
+        }
+    }
+    return G;
+}
+
+int** ringSumG(int** G1, int** G2, int size) {
+    int** G = (int**)malloc(size * sizeof(int*));
+    for (int i = 0; i < size; i++) {
+        G[i] = (int*)malloc(size * sizeof(int));
+        for (int j = 0; j < size; j++) {
+            G[i][j] = G1[i][j] ^ G2[i][j]; //XOR
+        }
+    }
+    return G;
+}
+
+
 int main() {
+    setlocale(LC_ALL, "Russian");
     srand(time(NULL));
     int nG1, nG2, v1, v2;
 
-    printf("nG1 = ");
+    printf("Введите количество вершин для графа G1: ");
     scanf("%d", &nG1);
-
     int** G1 = createG(nG1);
-
-    printf("Matrix G1:\n");
+    printf("\nМатрица смежности для графа G1:\n");
     printG(G1, nG1);
 
-    printf("Ver1 for union = ");
-    scanf("%d", &v1);
-    printf("Ver2 for union = ");
-    scanf("%d", &v2);
+    printf("Введите количество вершин для графа G2: ");
+    scanf("%d", &nG2);
+    int** G2 = createG(nG2);
+    printf("\nМатрица смежности для графа G2:\n");
+    printG(G2, nG2);
 
+    int** G_union = unionG(G1, G2, nG1);
+    printf("\nМатрица смежности для объединения G1 и G2:\n");
+    printG(G_union, nG1);
+
+    int** G_intersect = intersectG(G1, G2, nG1);
+    printf("\nМатрица смежности для пересечения G1 и G2:\n");
+    printG(G_intersect, nG1);
+
+    int** G_ringSum = ringSumG(G1, G2, nG1);
+    printf("\nМатрица смежности для кольцевой суммы G1 и G2:\n");
+    printG(G_ringSum, nG1);
+
+    printf("Введите вершины для отождествления в G1 (v1 и v2): ");
+    scanf("%d %d", &v1, &v2);
     G1 = unionV(G1, nG1, v1, v2);
     nG1--;
-
-    printf("\nAfter union:\n");
+    printf("\nПосле отождествления вершин в G1:\n");
     printG(G1, nG1);
 
-    printf("Ver1 for contraction = ");
-    scanf("%d", &v1);
-    printf("Ver2 for contraction = ");
-    scanf("%d", &v2);
-
+    printf("Введите вершины для стягивания ребра в G1 (v1 и v2): ");
+    scanf("%d %d", &v1, &v2);
     G1 = contrV(G1, nG1, v1, v2);
     nG1--;
-
-    printf("\nAfter contraction:\n");
+    printf("\nПосле стягивания ребра в G1:\n");
     printG(G1, nG1);
 
-    printf("Ver for splitting = ");
+    printf("Введите вершину для расщепления в G1: ");
     scanf("%d", &v1);
-
     G1 = splitV(G1, nG1, v1);
     nG1++;
-
-    printf("\nAfter splitting:\n");
+    printf("\nПосле расщепления вершины в G1:\n");
     printG(G1, nG1);
+
 
     for (int i = 0; i < nG1; i++) {
         free(G1[i]);
+        free(G_intersect[i]);
+        free(G_ringSum[i]);
+        free(G_union[i]);
     }
     free(G1);
-
+    for (int i = 0; i < nG2; i++) {
+        free(G2[i]);
+    }
+    free(G_intersect);
+    free(G_ringSum);
+    free(G_union);
+    free(G2);
     return 0;
 }
