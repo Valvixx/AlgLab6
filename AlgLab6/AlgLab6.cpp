@@ -29,28 +29,6 @@ void printG(int** G, int size) {
     printf("\n");
 }
 
-void adjMatrixToList(int** G, int size, int** adjList, int* degrees) {
-    for (int i = 0; i < size; i++) {
-        degrees[i] = 0;
-        for (int j = 0; j < size; j++) {
-            if (G[i][j] == 1) {
-                adjList[i][degrees[i]] = j;
-                degrees[i]++;
-            }
-        }
-    }
-}
-
-void printAdjList(int** adjList, int* degrees, int size) {
-    for (int i = 0; i < size; i++) {
-        printf("%d: ", i);
-        for (int j = 0; j < degrees[i]; j++) {
-            printf("%d ", adjList[i][j]);
-        }
-        printf("\n");
-    }
-}
-
 int** delG(int** G, int size, int v) {
     int** G1 = (int**)malloc((size - 1) * sizeof(int*));
     for (int i = 0; i < size - 1; i++) {
