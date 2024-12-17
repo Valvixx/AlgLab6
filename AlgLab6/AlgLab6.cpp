@@ -160,26 +160,58 @@ int main() {
     printf("\nМатрица смежности для кольцевой суммы G1 и G2:\n");
     printG(G_ringSum, nG1);
 
-    printf("Введите вершины для отождествления в G1 (v1 и v2): ");
-    scanf("%d %d", &v1, &v2);
-    G1 = unionV(G1, nG1, v1, v2);
-    nG1--;
-    printf("\nПосле отождествления вершин в G1:\n");
-    printG(G1, nG1);
+    while (true)
+    {
+        printf("Введите вершины для отождествления в G1 (v1 и v2): ");
+        scanf("%d %d", &v1, &v2);
+        if (v1 < nG1 && v2 < nG1)
+        {
+            G1 = unionV(G1, nG1, v1, v2);
+            nG1--;
+            printf("\nПосле отождествления вершин в G1:\n");
+            printG(G1, nG1);
+            break;
+        }
+        else
+        {
+            printf("Значения не валидны\n");
+        }
+    }
 
-    printf("Введите вершины для стягивания ребра в G1 (v1 и v2): ");
-    scanf("%d %d", &v1, &v2);
-    G1 = contrV(G1, nG1, v1, v2);
-    nG1--;
-    printf("\nПосле стягивания ребра в G1:\n");
-    printG(G1, nG1);
+    while (true)
+    {
+        printf("Введите вершины для стягивания ребра в G1 (v1 и v2): ");
+        scanf("%d %d", &v1, &v2);
+        if (v1 < nG1 && v2 < nG1) {
+            G1 = contrV(G1, nG1, v1, v2);
+            nG1--;
+            printf("\nПосле стягивания ребра в G1:\n");
+            printG(G1, nG1);
+            break;
+        }
+        else
+        {
+            printf("Значения не валидны\n");
+        }
 
-    printf("Введите вершину для расщепления в G1: ");
-    scanf("%d", &v1);
-    G1 = splitV(G1, nG1, v1);
-    nG1++;
-    printf("\nПосле расщепления вершины в G1:\n");
-    printG(G1, nG1);
+    }
+
+    while (true)
+    {
+        printf("Введите вершину для расщепления в G1: ");
+        scanf("%d", &v1);
+        if (v1 < nG1) {
+            G1 = splitV(G1, nG1, v1);
+            nG1++;
+            printf("\nПосле расщепления вершины в G1:\n");
+            printG(G1, nG1);
+            break;
+        }
+        else
+        {
+            printf("Значения не валидны\n");
+        }
+    }
 
 
     for (int i = 0; i < nG1; i++) {
